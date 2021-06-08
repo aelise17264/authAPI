@@ -10,6 +10,11 @@ function tokenForUser(user){
     return jwt.encode({sub: user.id, iat: timestamp}, config.secret)
 }
 
+exports.signin = function(req, res, next){
+    //user has already had their email & password auth'd they just need a token
+    res.send({token: tokenForUser(req.user)})
+}
+
 mongoose.set('useCreateIndex', true)
 
 exports.signup = function(req, res, next){
