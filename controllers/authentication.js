@@ -1,5 +1,6 @@
 const User = require('../models/user');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+// mongoose.set('useCreateIndex', true);
 
 const jwt = require('jwt-simple');
 const config = require('../config');
@@ -15,7 +16,7 @@ exports.signin = function(req, res, next){
     res.send({token: tokenForUser(req.user)})
 }
 
-mongoose.set('useCreateIndex', true)
+
 
 exports.signup = function(req, res, next){
     const email = req.body.email;
@@ -39,16 +40,17 @@ exports.signup = function(req, res, next){
         const user = new User({
             email: email,
             password: password
-        })
-        user.save(function(error){
-            if(error){
-                return next(error)
+        });
+        user.save(function(err){
+            if(err){
+                return next(err)
             }
+        //respond to request indicating the user was created
+
             res.json({token: tokenForUser(user)})
-        })
+        });
 
-    //respond to request indicating the user was created
 
-    })
+    });
 
 }

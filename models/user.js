@@ -1,12 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 //define our schema modle
 const userSchema = new Schema({
     email: {type: String, unique: true}, //to avoid repeats of the same email address
     password: String
 });
+
+userSchema.methods.comparePassword = function(candidatePassword, cb){
+    bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
+        if(err){
+            return cb(err)
+        }
+        cb(null, isMatch)
+    });
+}
 
 //on save hook encrypt password
 //before saving a model, run this function
@@ -27,18 +36,11 @@ userSchema.pre('save', function(next){
             //overwrite plain text password w/ encrypted password
             user.password = hash;
             next();
-        })
-    })
-})
-
-userSchema.methods.comparePassword = function(candidatePassword, cb){
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch){
-        if(err){
-            return cb(err)
-        }
-        cb(null, isMatch)
+        });
     });
-}
+});
+
+
 
 //create the model class
 const ModelClass = mongoose.model('user', userSchema);

@@ -16,7 +16,7 @@ app.use(express.static("public"))
 
 //db setup
 mongoose.connect("mongodb://localhost:27017/auth", {useNewUrlParser: true, useUnifiedTopology: true}); //creates a new database in mongodb called auth
-
+mongoose.set('useCreateIndex', true);
 
 router(app)
 
